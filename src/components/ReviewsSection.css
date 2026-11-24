@@ -1,0 +1,113 @@
+.reviews-strip-section {
+  margin-top: 70px;
+  margin-bottom: 40px;
+  overflow: hidden;
+}
+
+.reviews-strip-title {
+  font-size: 1.75rem;
+  font-weight: 800;
+  color: var(--primary-color);
+  margin-bottom: 22px;
+}
+
+.reviews-marquee-wrapper {
+  width: 100%;
+  overflow: hidden;
+  padding: 10px 0 20px;
+  mask-image: linear-gradient(to right, transparent, black 4%, black 96%, transparent);
+  -webkit-mask-image: linear-gradient(to right, transparent, black 4%, black 96%, transparent);
+}
+
+.reviews-marquee-track {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  gap: 16px;
+  width: max-content;
+  animation: scrollReviewsMarquee 45s linear infinite;
+}
+
+/* يتوقف الشريط عن الحركة عند تمرير الفأرة لتمكين الزائر من المشاهدة أو النقر */
+.reviews-marquee-wrapper:hover .reviews-marquee-track {
+  animation-play-state: paused;
+}
+
+@keyframes scrollReviewsMarquee {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.review-photo-only-card {
+  flex: 0 0 210px;
+  height: 360px;
+  border-radius: 18px;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.55);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgba(255, 255, 255, 0.85);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+  cursor: zoom-in;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  padding: 6px;
+}
+
+.review-photo-only-card:hover {
+  transform: translateY(-6px) scale(1.03);
+  box-shadow: 0 14px 30px rgba(0, 0, 0, 0.16);
+}
+
+.review-photo-only-card img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  border-radius: 12px;
+  background-color: #ffffff;
+  display: block;
+}
+
+/* نافذة تكبير الصورة عند الضغط */
+.photo-lightbox {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.85);
+  backdrop-filter: blur(8px);
+  z-index: 400;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.photo-lightbox img {
+  max-width: 92%;
+  max-height: 88vh;
+  border-radius: 16px;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+}
+
+.lightbox-close {
+  position: absolute;
+  top: 24px;
+  right: 24px;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.2);
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@media (max-width: 768px) {
+  .review-photo-only-card {
+    flex: 0 0 175px;
+    height: 300px;
+  }
+}

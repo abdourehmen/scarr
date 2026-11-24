@@ -1,0 +1,59 @@
+:root {
+  --primary-color: #111111;
+  --accent-color: #ff4d00;
+  --accent-hover: #e04400;
+  --bg-color: #f8f9fa;
+  --card-bg: #ffffff;
+  --text-main: #1a1a1a;
+  --text-muted: #666666;
+  --border-color: #e5e7eb;
+  --success-color: #16a34a;
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.06);
+  --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.1);
+  --radius: 12px;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Cairo', sans-serif;
+}
+
+body {
+  background-color: var(--bg-color);
+  color: var(--text-main);
+  direction: rtl;
+  overflow-x: hidden;
+}
+
+button {
+  cursor: pointer;
+  border: none;
+  outline: none;
+  transition: all 0.25s ease;
+}
+
+.container {
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+body {
+  background:
+    radial-gradient(circle at 12% 35%, rgba(255, 77, 0, 0.07) 0%, transparent 45%),
+    radial-gradient(circle at 88% 70%, rgba(17, 17, 17, 0.06) 0%, transparent 45%),
+    #f3f5f8;
+  color: var(--text-main);
+  direction: rtl;
+  overflow-x: hidden;
+}
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 90px;
+}
+
+section,
+main {
+  scroll-margin-top: 90px;
+}
