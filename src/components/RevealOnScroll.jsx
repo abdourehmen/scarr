@@ -11,6 +11,21 @@ export default function RevealOnScroll({
   const ref = useRef(null);
 
   useEffect(() => {
+    const node = ref.current;
+    if (!node) return;
+
+    const prefersReducedMotion =
+      typeof window !== 'undefined' &&
+      window.matchMedia &&
+      window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    if (prefersReducedMotion || typeof IntersectionObserver === 'undefined') {
+      setIsVisible(true);
+      return;
+    }
+
+    const isSmallScreen = typeof window !== 'undefined' && window.innerWidth <= 600;
+
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
@@ -19,14 +34,12 @@ export default function RevealOnScroll({
         }
       },
       {
-        threshold: 0.12,
-        rootMargin: '0px 0px -40px 0px'
+        threshold: isSmallScreen ? 0.05 : 0.12,
+        rootMargin: isSmallScreen ? '0px 0px -16px 0px' : '0px 0px -40px 0px'
       }
     );
 
-    if (ref.current) {
-      observer.observe(ref.current);
-    }
+    observer.observe(node);
 
     return () => observer.disconnect();
   }, []);

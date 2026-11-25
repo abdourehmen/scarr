@@ -1,14 +1,16 @@
 .reviews-strip-section {
-  margin-top: 70px;
-  margin-bottom: 40px;
+  margin-top: clamp(44px, 6vw, 70px);
+  margin-bottom: clamp(28px, 4vw, 40px);
   overflow: hidden;
+  max-width: 100%;
 }
 
 .reviews-strip-title {
-  font-size: 1.75rem;
+  font-size: clamp(1.25rem, 3.8vw, 1.75rem);
   font-weight: 800;
   color: var(--primary-color);
-  margin-bottom: 22px;
+  margin-bottom: clamp(14px, 2.5vw, 22px);
+  overflow-wrap: anywhere;
 }
 
 .reviews-marquee-wrapper {
@@ -23,9 +25,10 @@
   display: flex;
   flex-direction: row;
   flex-wrap: nowrap;
-  gap: 16px;
+  gap: clamp(10px, 2vw, 16px);
   width: max-content;
   animation: scrollReviewsMarquee 45s linear infinite;
+  will-change: transform;
 }
 
 /* يتوقف الشريط عن الحركة عند تمرير الفأرة لتمكين الزائر من المشاهدة أو النقر */
@@ -43,8 +46,8 @@
 }
 
 .review-photo-only-card {
-  flex: 0 0 210px;
-  height: 360px;
+  flex: 0 0 clamp(148px, 26vw, 210px);
+  height: clamp(250px, 44vw, 360px);
   border-radius: 18px;
   overflow: hidden;
   background: rgba(255, 255, 255, 0.55);
@@ -77,37 +80,58 @@
   inset: 0;
   background: rgba(0, 0, 0, 0.85);
   backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
   z-index: 400;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 20px;
+  padding: clamp(12px, 3vw, 24px);
 }
 
 .photo-lightbox img {
-  max-width: 92%;
-  max-height: 88vh;
+  max-width: min(92vw, 100%);
+  max-height: 86dvh;
+  object-fit: contain;
   border-radius: 16px;
   box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
 }
 
 .lightbox-close {
   position: absolute;
-  top: 24px;
-  right: 24px;
-  width: 42px;
-  height: 42px;
+  top: clamp(14px, 3vw, 24px);
+  inset-inline-end: clamp(14px, 3vw, 24px);
+  width: 40px;
+  height: 40px;
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.22);
   color: #ffffff;
   display: flex;
   align-items: center;
   justify-content: center;
+  z-index: 401;
 }
 
 @media (max-width: 768px) {
   .review-photo-only-card {
-    flex: 0 0 175px;
-    height: 300px;
+    flex: 0 0 165px;
+    height: 285px;
+  }
+
+  .reviews-marquee-wrapper {
+    mask-image: linear-gradient(to right, transparent, black 2.5%, black 97.5%, transparent);
+    -webkit-mask-image: linear-gradient(to right, transparent, black 2.5%, black 97.5%, transparent);
+  }
+}
+
+@media (max-width: 480px) {
+  .review-photo-only-card {
+    flex: 0 0 144px;
+    height: 248px;
+    border-radius: 14px;
+    padding: 5px;
+  }
+
+  .review-photo-only-card:hover {
+    transform: none;
   }
 }

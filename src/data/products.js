@@ -1,15 +1,21 @@
 import heroImg from '../assets/hero.png';
 
-const localImages = import.meta.glob('../assets/photo1*.{jpg,webp,png,jpeg}', {
-  eager: true,
-  import: 'default'
-});
-
-const fallbackGallery = Object.values(localImages);
+const shoeGalleryPool = [
+  'https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=900&q=80',
+  'https://images.unsplash.com/photo-1549298916-b41d501d3772?auto=format&fit=crop&w=900&q=80',
+  'https://images.unsplash.com/photo-1614252235316-8c857d38b5f4?auto=format&fit=crop&w=900&q=80',
+  'https://images.unsplash.com/photo-1606107557195-0e29a4b5b4aa?auto=format&fit=crop&w=900&q=80',
+  'https://images.unsplash.com/photo-1525966222134-fcfa99b8ae77?auto=format&fit=crop&w=900&q=80',
+  'https://images.unsplash.com/photo-1533867617858-e7b97e060509?auto=format&fit=crop&w=900&q=80',
+  'https://images.unsplash.com/photo-1595950653106-6c9ebd614d3a?auto=format&fit=crop&w=900&q=80',
+  'https://images.unsplash.com/photo-1600185365926-3a2ce3cdb9eb?auto=format&fit=crop&w=900&q=80',
+  heroImg
+];
 
 const getGallery = (primaryUrl, index) => {
-  const extra1 = fallbackGallery[index % fallbackGallery.length] || heroImg;
-  const extra2 = fallbackGallery[(index + 1) % fallbackGallery.length] || heroImg;
+  const candidates = shoeGalleryPool.filter((url) => url !== primaryUrl);
+  const extra1 = candidates[index % candidates.length] || primaryUrl;
+  const extra2 = candidates[(index + 1) % candidates.length] || primaryUrl;
   return [primaryUrl, extra1, extra2];
 };
 

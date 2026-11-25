@@ -19,12 +19,14 @@ export default function Hero() {
   }, []);
 
   return (
-    <section className="hero-images-only">
+    <section className="hero-images-only" aria-label="Featured Footwear Showcase">
       {heroImages.map((imgUrl, index) => (
         <div
-          key={index}
+          key={imgUrl}
+          role="img"
+          aria-label={`Showcase slide ${index + 1}`}
           className={`hero-slide-img ${index === currentIndex ? 'active' : ''}`}
-          style={{ backgroundImage: `url(${imgUrl})` }}
+          style={{ backgroundImage: `url("${imgUrl}")` }}
         />
       ))}
     </section>

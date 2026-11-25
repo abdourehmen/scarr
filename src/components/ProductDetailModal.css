@@ -8,7 +8,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 16px;
+  padding: 14px;
   animation: fadeInModal 0.25s ease;
 }
 
@@ -21,21 +21,23 @@
   position: relative;
   width: 100%;
   max-width: 880px;
-  max-height: 92vh;
+  max-height: 92dvh;
   overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
   background: rgba(255, 255, 255, 0.85);
   backdrop-filter: blur(24px) saturate(180%);
   -webkit-backdrop-filter: blur(24px) saturate(180%);
   border: 1px solid rgba(255, 255, 255, 0.9);
   border-radius: 24px;
-  padding: 28px;
+  padding: clamp(18px, 3vw, 28px);
   box-shadow: 0 25px 60px rgba(0, 0, 0, 0.22);
+  min-width: 0;
 }
 
 .detail-close-btn {
   position: absolute;
-  top: 18px;
-  left: 18px;
+  top: 16px;
+  inset-inline-start: 16px;
   width: 38px;
   height: 38px;
   border-radius: 50%;
@@ -45,11 +47,7 @@
   align-items: center;
   justify-content: center;
   z-index: 5;
-}
-
-html[dir="ltr"] .detail-close-btn {
-  left: auto;
-  right: 18px;
+  flex-shrink: 0;
 }
 
 .detail-close-btn:hover {
@@ -59,15 +57,19 @@ html[dir="ltr"] .detail-close-btn {
 
 .detail-grid {
   display: grid;
-  grid-template-columns: 1fr 1.05fr;
-  gap: 32px;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr);
+  gap: clamp(18px, 3.5vw, 32px);
   align-items: start;
+}
+
+.detail-grid > div {
+  min-width: 0;
 }
 
 /* معرض الصور */
 .detail-main-img {
   position: relative;
-  height: 360px;
+  height: clamp(240px, 38vw, 360px);
   border-radius: 18px;
   overflow: hidden;
   background: #f1f3f5;
@@ -82,25 +84,30 @@ html[dir="ltr"] .detail-close-btn {
 
 .detail-badge {
   position: absolute;
-  top: 14px;
-  right: 14px;
+  top: 12px;
+  inset-inline-start: 12px;
   background: var(--accent-color);
   color: #ffffff;
-  padding: 5px 14px;
+  padding: 5px 12px;
   border-radius: 99px;
-  font-size: 0.8rem;
+  font-size: clamp(0.72rem, 1.8vw, 0.8rem);
   font-weight: 700;
+  max-width: calc(100% - 24px);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .detail-thumbs {
   display: flex;
+  flex-wrap: wrap;
   gap: 10px;
   margin-top: 12px;
 }
 
 .detail-thumb-btn {
-  width: 72px;
-  height: 72px;
+  width: clamp(56px, 12vw, 72px);
+  height: clamp(56px, 12vw, 72px);
   border-radius: 12px;
   overflow: hidden;
   border: 2px solid transparent;
@@ -108,6 +115,7 @@ html[dir="ltr"] .detail-close-btn {
   background: #ffffff;
   opacity: 0.65;
   transition: all 0.2s ease;
+  flex-shrink: 0;
 }
 
 .detail-thumb-btn.active,
@@ -125,38 +133,36 @@ html[dir="ltr"] .detail-close-btn {
 
 /* معلومات المنتج */
 .detail-category {
-  font-size: 0.85rem;
+  font-size: clamp(0.78rem, 1.9vw, 0.85rem);
   font-weight: 700;
   color: var(--accent-color);
 }
 
 .detail-title {
-  font-size: 1.65rem;
+  font-size: clamp(1.2rem, 3.2vw, 1.65rem);
   font-weight: 800;
   margin: 4px 0 12px;
   color: var(--primary-color);
-  text-align: right;
-}
-
-html[dir="ltr"] .detail-title {
-  text-align: left;
+  text-align: start;
+  overflow-wrap: anywhere;
 }
 
 .detail-price-box {
   display: flex;
   align-items: baseline;
-  gap: 12px;
+  flex-wrap: wrap;
+  gap: 10px;
   margin-bottom: 16px;
 }
 
 .detail-price {
-  font-size: 1.55rem;
+  font-size: clamp(1.2rem, 3vw, 1.55rem);
   font-weight: 800;
   color: var(--primary-color);
 }
 
 .detail-old-price {
-  font-size: 1.05rem;
+  font-size: clamp(0.88rem, 2.2vw, 1.05rem);
   color: #9ca3af;
 }
 
@@ -175,9 +181,10 @@ html[dir="ltr"] .detail-title {
 }
 
 .detail-desc p {
-  font-size: 0.88rem;
+  font-size: clamp(0.84rem, 2vw, 0.88rem);
   color: var(--text-muted);
   line-height: 1.6;
+  overflow-wrap: anywhere;
 }
 
 .detail-option-group {
@@ -198,13 +205,14 @@ html[dir="ltr"] .detail-title {
 }
 
 .detail-size-btn {
-  width: 42px;
-  height: 38px;
+  min-width: 40px;
+  height: 36px;
+  padding: 0 8px;
   border-radius: 10px;
   border: 1px solid var(--border-color);
   background: #ffffff;
   font-weight: 700;
-  font-size: 0.92rem;
+  font-size: 0.9rem;
 }
 
 .detail-size-btn.active {
@@ -226,9 +234,11 @@ html[dir="ltr"] .detail-title {
 
 .detail-qty-box button {
   background: none;
-  display: flex;
+  display: inline-flex;
   align-items: center;
+  justify-content: center;
   color: var(--primary-color);
+  padding: 2px;
 }
 
 .detail-actions {
@@ -239,12 +249,13 @@ html[dir="ltr"] .detail-title {
 
 .btn-detail-buy {
   flex: 1.2;
+  min-width: 0;
   background: linear-gradient(135deg, #ff4d00 0%, #e04400 100%);
   color: #ffffff;
-  padding: 13px 18px;
+  padding: 13px 16px;
   border-radius: 12px;
   font-weight: 800;
-  font-size: 1rem;
+  font-size: clamp(0.88rem, 2.2vw, 1rem);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -254,12 +265,13 @@ html[dir="ltr"] .detail-title {
 
 .btn-detail-cart {
   flex: 1;
+  min-width: 0;
   background: var(--primary-color);
   color: #ffffff;
-  padding: 13px 18px;
+  padding: 13px 16px;
   border-radius: 12px;
   font-weight: 700;
-  font-size: 0.95rem;
+  font-size: clamp(0.86rem, 2.1vw, 0.95rem);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -276,7 +288,7 @@ html[dir="ltr"] .detail-title {
   gap: 8px;
   padding-top: 14px;
   border-top: 1px solid rgba(0, 0, 0, 0.08);
-  font-size: 0.85rem;
+  font-size: clamp(0.8rem, 1.9vw, 0.85rem);
   font-weight: 600;
   color: var(--text-muted);
 }
@@ -285,13 +297,37 @@ html[dir="ltr"] .detail-title {
   display: flex;
   align-items: center;
   gap: 8px;
+  overflow-wrap: anywhere;
 }
 
 @media (max-width: 780px) {
   .detail-grid {
     grid-template-columns: 1fr;
   }
+
   .detail-main-img {
-    height: 270px;
+    height: clamp(210px, 55vw, 270px);
+  }
+}
+
+@media (max-width: 520px) {
+  .detail-modal-overlay {
+    padding: 10px;
+  }
+
+  .detail-modal-glass {
+    border-radius: 18px;
+    padding: 16px 14px;
+    max-height: 94dvh;
+  }
+
+  .detail-actions {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .btn-detail-buy,
+  .btn-detail-cart {
+    width: 100%;
   }
 }

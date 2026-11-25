@@ -7,17 +7,30 @@ export default function ProductDetailModal({ product, isOpen, onClose, onAddToCa
   const [selectedSize, setSelectedSize] = useState(null);
   const [qty, setQty] = useState(1);
 
+  const sizesList =
+    Array.isArray(product?.sizes) && product.sizes.length > 0 ? product.sizes : [40];
+
   useEffect(() => {
     if (product) {
       setSelectedImg(0);
-      setSelectedSize(product.sizes[0]);
+      setSelectedSize(sizesList[0]);
       setQty(1);
     }
-  }, [product]);
+  }, [product?.id]);
 
   if (!isOpen || !product) return null;
 
-  const images = product.images || [product.image];
+  const images =
+    Array.isArray(product?.images) && product.images.length > 0
+      ? product.images
+      : product?.image
+      ? [product.image]
+      : [];
+
+  const activeImage = images[selectedImg] || images[0] || '';
+  const activeSize = selectedSize ?? sizesList[0];
+  const numericPrice = Number(product?.price) || 0;
+  const numericOldPrice = product?.oldPrice ? Number(product.oldPrice) : null;
 
   const t = {
     ar: {
@@ -48,14 +61,25 @@ export default function ProductDetailModal({ product, isOpen, onClose, onAddToCa
 
   const productData = {
     ...product,
-    image: images[0]
+    image: images[0] || activeImage
   };
 
   return (
-    <div className="detail-modal-overlay" onClick={onClose}>
+    <div
+      className="detail-modal-overlay"
+      onClick={onClose}
+      role="dialog"
+      aria-modal="true"
+      aria-label={product.name}
+    >
       <div className="detail-modal-glass" onClick={(e) => e.stopPropagation()}>
-        <button type="button" className="detail-close-btn" onClick={onClose} aria-label="Close">
-          <X size={22} />
+        <button
+          type="button"
+          className="detail-close-btn"
+          onClick={onClose}
+          aria-label={lang === 'ar' ? 'إغلاق' : 'Close'}
+        >
+          <X size={22} aria-hidden="true" />
         </button>
 
         <div className="detail-grid">
@@ -63,17 +87,19 @@ export default function ProductDetailModal({ product, isOpen, onClose, onAddToCa
           <div className="detail-gallery">
             <div className="detail-main-img">
               {product.badge && <span className="detail-badge">{product.badge}</span>}
-              <img src={images[selectedImg]} alt={product.name} />
+              {activeImage && <img src={activeImage} alt={product.name} />}
             </div>
 
             {images.length > 1 && (
               <div className="detail-thumbs">
                 {images.map((img, idx) => (
                   <button
-                    key={idx}
+                    key={`${img}-${idx}`}
                     type="button"
                     className={`detail-thumb-btn ${selectedImg === idx ? 'active' : ''}`}
                     onClick={() => setSelectedImg(idx)}
+                    aria-label={lang === 'ar' ? `صورة ${idx + 1}` : `Image ${idx + 1}`}
+                    aria-pressed={selectedImg === idx}
                   >
                     <img src={img} alt={`${product.name} ${idx + 1}`} />
                   </button>
@@ -89,11 +115,11 @@ export default function ProductDetailModal({ product, isOpen, onClose, onAddToCa
 
             <div className="detail-price-box">
               <span className="detail-price">
-                {product.price.toLocaleString()} {t.currency}
+                {numericPrice.toLocaleString()} {t.currency}
               </span>
-              {product.oldPrice && (
+              {numericOldPrice && (
                 <del className="detail-old-price">
-                  {product.oldPrice.toLocaleString()} {t.currency}
+                  {numericOldPrice.toLocaleString()} {t.currency}
                 </del>
               )}
             </div>
@@ -107,12 +133,13 @@ export default function ProductDetailModal({ product, isOpen, onClose, onAddToCa
             <div className="detail-option-group">
               <label>{t.size}</label>
               <div className="detail-sizes">
-                {product.sizes.map((size) => (
+                {sizesList.map((size) => (
                   <button
                     key={size}
                     type="button"
-                    className={`detail-size-btn ${selectedSize === size ? 'active' : ''}`}
+                    className={`detail-size-btn ${activeSize === size ? 'active' : ''}`}
                     onClick={() => setSelectedSize(size)}
+                    aria-pressed={activeSize === size}
                   >
                     {size}
                   </button>
@@ -124,12 +151,20 @@ export default function ProductDetailModal({ product, isOpen, onClose, onAddToCa
             <div className="detail-option-group">
               <label>{t.quantity}</label>
               <div className="detail-qty-box">
-                <button type="button" onClick={() => setQty((q) => Math.max(1, q - 1))}>
-                  <Minus size={16} />
+                <button
+                  type="button"
+                  onClick={() => setQty((q) => Math.max(1, q - 1))}
+                  aria-label={lang === 'ar' ? 'إنقاص الكمية' : 'Decrease quantity'}
+                >
+                  <Minus size={16} aria-hidden="true" />
                 </button>
                 <span>{qty}</span>
-                <button type="button" onClick={() => setQty((q) => q + 1)}>
-                  <Plus size={16} />
+                <button
+                  type="button"
+                  onClick={() => setQty((q) => q + 1)}
+                  aria-label={lang === 'ar' ? 'زيادة الكمية' : 'Increase quantity'}
+                >
+                  <Plus size={16} aria-hidden="true" />
                 </button>
               </div>
             </div>
@@ -141,10 +176,10 @@ export default function ProductDetailModal({ product, isOpen, onClose, onAddToCa
                 className="btn-detail-buy"
                 onClick={() => {
                   onClose();
-                  onQuickBuy(productData, selectedSize, qty);
+                  onQuickBuy && onQuickBuy(productData, activeSize, qty);
                 }}
               >
-                <Zap size={18} />
+                <Zap size={18} aria-hidden="true" />
                 <span>{t.quickBuy}</span>
               </button>
 
@@ -153,21 +188,21 @@ export default function ProductDetailModal({ product, isOpen, onClose, onAddToCa
                 className="btn-detail-cart"
                 onClick={() => {
                   for (let i = 0; i < qty; i++) {
-                    onAddToCart(productData, selectedSize);
+                    onAddToCart && onAddToCart(productData, activeSize);
                   }
                   onClose();
                 }}
               >
-                <ShoppingCart size={18} />
+                <ShoppingCart size={18} aria-hidden="true" />
                 <span>{t.addCart}</span>
               </button>
             </div>
 
             {/* ضمانات سريعة */}
             <div className="detail-perks">
-              <div><Truck size={16} color="#ff4d00" /> <span>{t.delivery}</span></div>
-              <div><ShieldCheck size={16} color="#ff4d00" /> <span>{t.cod}</span></div>
-              <div><RefreshCw size={16} color="#ff4d00" /> <span>{t.exchange}</span></div>
+              <div><Truck size={16} color="#ff4d00" aria-hidden="true" /> <span>{t.delivery}</span></div>
+              <div><ShieldCheck size={16} color="#ff4d00" aria-hidden="true" /> <span>{t.cod}</span></div>
+              <div><RefreshCw size={16} color="#ff4d00" aria-hidden="true" /> <span>{t.exchange}</span></div>
             </div>
           </div>
         </div>

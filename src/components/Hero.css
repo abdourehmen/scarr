@@ -1,11 +1,12 @@
 .hero-images-only {
   position: relative;
   width: 100%;
-  height: calc(100vh - 74px);
-  min-height: 540px;
+  height: calc(100dvh - 74px);
+  min-height: clamp(320px, 55vh, 540px);
+  max-height: 920px;
   overflow: hidden;
   background-color: #111111;
-  margin-bottom: 48px;
+  margin-bottom: clamp(28px, 4vw, 48px);
 }
 
 .hero-slide-img {
@@ -13,6 +14,7 @@
   inset: 0;
   background-size: cover;
   background-position: center;
+  background-repeat: no-repeat;
   opacity: 0;
   transform: scale(1.06);
   transition: opacity 0.9s ease-in-out, transform 4.5s ease-out;
@@ -24,9 +26,31 @@
   transform: scale(1);
 }
 
+@media (max-width: 992px) {
+  .hero-images-only {
+    height: 68dvh;
+    min-height: 360px;
+  }
+}
+
 @media (max-width: 768px) {
   .hero-images-only {
-    height: 75vh;
-    min-height: 420px;
+    height: 62dvh;
+    min-height: 280px;
+  }
+}
+
+@media (max-width: 480px) {
+  .hero-images-only {
+    height: 52dvh;
+    min-height: 230px;
+    margin-bottom: 24px;
+  }
+}
+
+@media (max-height: 500px) and (orientation: landscape) {
+  .hero-images-only {
+    height: 85dvh;
+    min-height: 220px;
   }
 }

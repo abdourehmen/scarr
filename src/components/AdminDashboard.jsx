@@ -441,7 +441,7 @@ export default function AdminDashboard({ onBackToStore }) {
 
         {activeTab === 'orders' && (
           <div className="admin-section-box">
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <div className="admin-section-header">
               <h3>طلبيات الزبائن الواردة</h3>
               <button type="button" className="btn-store-link" onClick={fetchOrders}>
                 تحديث الطلبيات

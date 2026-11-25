@@ -1,9 +1,19 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { ShoppingBag, Globe, Menu, X } from 'lucide-react';
 import './Navbar.css';
 
 export default function Navbar({ cartCount, onOpenCart, lang, setLang }) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth > 820) {
+        setMobileMenuOpen(false);
+      }
+    };
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   const toggleLanguage = () => {
     setLang((prev) => (prev === 'ar' ? 'en' : 'ar'));
@@ -32,7 +42,11 @@ export default function Navbar({ cartCount, onOpenCart, lang, setLang }) {
           scar<span>_shoess</span>
         </a>
 
-        <nav className={`nav-links ${mobileMenuOpen ? 'open' : ''}`}>
+        <nav
+          id="primary-nav-links"
+          className={`nav-links ${mobileMenuOpen ? 'open' : ''}`}
+          aria-label={lang === 'ar' ? 'التنقل الرئيسي' : 'Primary Navigation'}
+        >
           <a href="#hero-section" onClick={() => setMobileMenuOpen(false)}>
             {t.home}
           </a>
@@ -48,7 +62,7 @@ export default function Navbar({ cartCount, onOpenCart, lang, setLang }) {
             onClick={toggleLanguage}
             title={lang === 'ar' ? 'Switch to English' : 'التبديل إلى العربية'}
           >
-            <Globe size={17} />
+            <Globe size={17} aria-hidden="true" />
             <span>{t.langBtn}</span>
           </button>
 
@@ -56,9 +70,9 @@ export default function Navbar({ cartCount, onOpenCart, lang, setLang }) {
             type="button"
             className="cart-btn"
             onClick={onOpenCart}
-            aria-label="Cart"
+            aria-label={lang === 'ar' ? 'سلة المشتريات' : 'Cart'}
           >
-            <ShoppingBag size={21} />
+            <ShoppingBag size={21} aria-hidden="true" />
             {cartCount > 0 && <span className="cart-badge">{cartCount}</span>}
           </button>
 
@@ -66,9 +80,11 @@ export default function Navbar({ cartCount, onOpenCart, lang, setLang }) {
             type="button"
             className="mobile-menu-btn"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            aria-label="Menu"
+            aria-label={lang === 'ar' ? 'القائمة' : 'Menu'}
+            aria-expanded={mobileMenuOpen}
+            aria-controls="primary-nav-links"
           >
-            {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+            {mobileMenuOpen ? <X size={24} aria-hidden="true" /> : <Menu size={24} aria-hidden="true" />}
           </button>
         </div>
       </div>

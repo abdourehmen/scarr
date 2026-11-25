@@ -34,23 +34,7 @@ export default function CheckoutModal({ isOpen, onClose, items, onOrderSuccess }
       return;
     }
 
-    const { error } = await supabase.from('orders').insert([
-      {
-        customer_name: fullName.trim(),
-        phone: phone.trim(),
-        wilaya: selectedWilaya.name,
-        commune: commune.trim(),
-        delivery_type: deliveryLabel,
-        items: items.map((i) => ({
-          name: i.name,
-          size: i.size,
-          qty: i.qty,
-          price: i.price
-        })),
-        delivery_fee: shippingCost,
-        total_price: grandTotal
-      }
-    ]);
+    const { error } = await supabase.from('orders').insert([      {        customer_name: fullName.trim(),        phone: phone.trim(),        wilaya: selectedWilaya.name,        commune: commune.trim(),        delivery_type: deliveryLabel,        items: items.map((i) => ({          name: i.name,          size: i.size,          qty: i.qty,          price: i.price        })),        delivery_fee: shippingCost,        total_price: grandTotal      }    ]);
 
     if (error) {
       console.error('Supabase Order Error:', error);

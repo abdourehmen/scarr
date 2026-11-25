@@ -1,30 +1,55 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { ShoppingCart, Zap, ChevronRight, ChevronLeft, Eye } from 'lucide-react';
 import './ProductCard.css';
 
 export default function ProductCard({ product, onAddToCart, onQuickBuy, onSelectProduct, lang = 'ar' }) {
-  const [selectedSize, setSelectedSize] = useState(product.sizes[0]);
+  const sizesList = Array.isArray(product?.sizes) && product.sizes.length > 0 ? product.sizes : [40];
+  const [selectedSize, setSelectedSize] = useState(sizesList[0]);
   const [currentImgIndex, setCurrentImgIndex] = useState(0);
 
-  const productImages = product.images || [product.image];
+  useEffect(() => {
+    if (!sizesList.includes(selectedSize)) {
+      setSelectedSize(sizesList[0]);
+    }
+  }, [product?.id, sizesList, selectedSize]);
+
+  const productImages =
+    Array.isArray(product?.images) && product.images.length > 0
+      ? product.images
+      : product?.image
+      ? [product.image]
+      : [];
+
+  useEffect(() => {
+    if (currentImgIndex >= productImages.length) {
+      setCurrentImgIndex(0);
+    }
+  }, [currentImgIndex, productImages.length]);
 
   const handlePrevImage = (e) => {
     e.stopPropagation();
+    if (productImages.length <= 1) return;
     setCurrentImgIndex((prev) => (prev - 1 + productImages.length) % productImages.length);
   };
 
   const handleNextImage = (e) => {
     e.stopPropagation();
+    if (productImages.length <= 1) return;
     setCurrentImgIndex((prev) => (prev + 1) % productImages.length);
   };
 
+  const activeImage = productImages[currentImgIndex] || productImages[0] || '';
+
   const productWithMainImage = {
     ...product,
-    image: productImages[0]
+    image: activeImage || productImages[0]
   };
 
+  const numericPrice = Number(product?.price) || 0;
+  const numericOldPrice = product?.oldPrice ? Number(product.oldPrice) : null;
+
   return (
-    <div className="product-card">
+    <article className="product-card">
       <div
         className="product-image-box"
         style={{ cursor: 'pointer' }}
@@ -36,19 +61,22 @@ export default function ProductCard({ product, onAddToCart, onQuickBuy, onSelect
           type="button"
           className="card-view-btn"
           title={lang === 'ar' ? 'التفاصيل' : 'View Details'}
+          aria-label={lang === 'ar' ? 'التفاصيل' : 'View Details'}
           onClick={(e) => {
             e.stopPropagation();
             onSelectProduct && onSelectProduct(product);
           }}
         >
-          <Eye size={16} />
+          <Eye size={16} aria-hidden="true" />
         </button>
 
-        <img
-          src={productImages[currentImgIndex]}
-          alt={`${product.name} - ${currentImgIndex + 1}`}
-          loading="lazy"
-        />
+        {activeImage && (
+          <img
+            src={activeImage}
+            alt={`${product.name} - ${currentImgIndex + 1}`}
+            loading="lazy"
+          />
+        )}
 
         {productImages.length > 1 && (
           <>
@@ -56,18 +84,18 @@ export default function ProductCard({ product, onAddToCart, onQuickBuy, onSelect
               type="button"
               className="card-img-arrow prev"
               onClick={handlePrevImage}
-              aria-label="الصورة السابقة"
+              aria-label={lang === 'ar' ? 'الصورة السابقة' : 'Previous image'}
             >
-              <ChevronRight size={16} />
+              <ChevronRight size={16} aria-hidden="true" />
             </button>
 
             <button
               type="button"
               className="card-img-arrow next"
               onClick={handleNextImage}
-              aria-label="الصورة التالية"
+              aria-label={lang === 'ar' ? 'الصورة التالية' : 'Next image'}
             >
-              <ChevronLeft size={16} />
+              <ChevronLeft size={16} aria-hidden="true" />
             </button>
 
             <div className="card-img-dots" onClick={(e) => e.stopPropagation()}>
@@ -77,7 +105,8 @@ export default function ProductCard({ product, onAddToCart, onQuickBuy, onSelect
                   type="button"
                   className={`card-dot ${idx === currentImgIndex ? 'active' : ''}`}
                   onClick={() => setCurrentImgIndex(idx)}
-                  aria-label={`صورة ${idx + 1}`}
+                  aria-label={lang === 'ar' ? `صورة ${idx + 1}` : `Image ${idx + 1}`}
+                  aria-pressed={idx === currentImgIndex}
                 />
               ))}
             </div>
@@ -96,20 +125,21 @@ export default function ProductCard({ product, onAddToCart, onQuickBuy, onSelect
         </h3>
 
         <div className="product-price-row">
-          <span className="current-price">{product.price.toLocaleString()} د.ج</span>
-          {product.oldPrice && (
-            <span className="old-price">{product.oldPrice.toLocaleString()} د.ج</span>
+          <span className="current-price">{numericPrice.toLocaleString()} د.ج</span>
+          {numericOldPrice && (
+            <span className="old-price">{numericOldPrice.toLocaleString()} د.ج</span>
           )}
         </div>
 
         <div className="sizes-selector">
           <span className="size-label">{lang === 'ar' ? 'المقاس:' : 'Size:'}</span>
           <div className="sizes-list">
-            {product.sizes.map((size) => (
+            {sizesList.map((size) => (
               <button
                 key={size}
                 type="button"
                 className={`size-btn ${selectedSize === size ? 'active' : ''}`}
+                aria-pressed={selectedSize === size}
                 onClick={() => setSelectedSize(size)}
               >
                 {size}
@@ -120,22 +150,25 @@ export default function ProductCard({ product, onAddToCart, onQuickBuy, onSelect
 
         <div className="product-actions">
           <button
+            type="button"
             className="btn-quick-buy"
-            onClick={() => onQuickBuy(productWithMainImage, selectedSize)}
+            onClick={() => onQuickBuy && onQuickBuy(productWithMainImage, selectedSize)}
           >
-            <Zap size={16} />
+            <Zap size={16} aria-hidden="true" />
             <span>{lang === 'ar' ? 'اطلب الآن' : 'Order Now'}</span>
           </button>
 
           <button
+            type="button"
             className="btn-add-cart"
             title={lang === 'ar' ? 'أضف إلى السلة' : 'Add to Cart'}
-            onClick={() => onAddToCart(productWithMainImage, selectedSize)}
+            aria-label={lang === 'ar' ? 'أضف إلى السلة' : 'Add to Cart'}
+            onClick={() => onAddToCart && onAddToCart(productWithMainImage, selectedSize)}
           >
-            <ShoppingCart size={18} />
+            <ShoppingCart size={18} aria-hidden="true" />
           </button>
         </div>
       </div>
-    </div>
+    </article>
   );
 }
